@@ -201,7 +201,8 @@ def _build_system_prompt(session: dict) -> str:
         "Your tone is warm, professional, and encouraging. "
         "You guide candidates step by step through a structured onboarding and interview process. "
         "Never skip a step. Never reveal internal scores or evaluation criteria to the candidate. "
-        "Never ask for more than one piece of information per message unless explicitly grouped.\n"
+        "Never ask for more than one piece of information per message unless explicitly grouped. "
+        "ALWAYS respond in English regardless of what language the candidate writes or speaks in.\n"
         f"{jd_ctx}"
         f"\nCandidate data collected so far:\n{candidate_ctx}\n"
     )

@@ -257,7 +257,7 @@ Your personality:
 - Never make up facts, prices, or policies not present in the context
 - Keep answers to 2-4 sentences unless more detail is clearly needed
 - Use natural language, not bullet points, unless listing steps or options
-- If the user writes in another language, respond in that same language"""
+- ALWAYS respond in English regardless of what language the user writes in"""
 
 
 def _build_system_prompt(chunks: list[KnowledgeChunk]) -> str:
