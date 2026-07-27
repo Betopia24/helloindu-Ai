@@ -627,6 +627,7 @@ from fastapi.responses import JSONResponse
 from app.utils.cache_manager import hiring_cache
 from app.utils.upload_to_bucket import (
     upload_file_object_to_s3,
+    generate_presigned_url,
     delete_s3_keys_batch,
     delete_s3_prefix,
 )
@@ -1069,12 +1070,13 @@ async def resume_upload(
     result = upload_file_object_to_s3(
         file_object=BytesIO(file_bytes),
         object_name=s3_key,
+        public=True,  # permanent public URL — no expiry
     )
 
     if not result.get("success"):
         raise HTTPException(status_code=500, detail=f"Resume upload failed: {result.get('message')}")
 
-    resume_url = result["url"]
+    resume_url = result["url"]  # plain permanent S3 URL (public-read)
     logger.info(f"Resume uploaded for session {session_id}: {resume_url}")
 
     # Finalize: build payload, cleanup, close session
@@ -1207,7 +1209,6 @@ async def health():
 #     try:
 #         # TODO: replace with real email provider
 #         logger.info(f"[DEV] OTP for {email}: {otp}")
-#         # Simulate success for now
 #         return True
 #     except Exception as e:
 #         logger.error(f"Email send failed for {email}: {e}")

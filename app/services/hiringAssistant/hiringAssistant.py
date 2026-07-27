@@ -1019,13 +1019,14 @@ def _extract_candidate_fields_local(session: dict, conversation_so_far: list) ->
                 candidate["phone"] = message
 
         # Name extraction — only during basic_info step
+        # Only accept ASCII Latin characters (rejects Hindi, Arabic, Chinese, etc.)
         if session.get("step") == "basic_info":
             words = message.split()
             if (
                 not candidate.get("first_name")
                 and len(words) >= 1
                 and len(words) <= 3
-                and all(w.isalpha() for w in words)
+                and all(w.isascii() and w.isalpha() for w in words)  # ASCII-only: rejects non-Latin scripts
             ):
                 candidate["first_name"] = words[0].title()
                 if len(words) >= 2:
@@ -1034,7 +1035,7 @@ def _extract_candidate_fields_local(session: dict, conversation_so_far: list) ->
                 candidate.get("first_name")
                 and not candidate.get("last_name")
                 and len(words) == 1
-                and words[0].isalpha()
+                and words[0].isascii() and words[0].isalpha()  # ASCII-only check
             ):
                 candidate["last_name"] = words[0].title()
 
@@ -1066,7 +1067,10 @@ def _build_system_prompt(session: dict) -> str:
         "You guide candidates step by step through a structured onboarding and interview process. "
         "Never skip a step. Never reveal internal scores or evaluation criteria to the candidate. "
         "Never ask for more than one piece of information per message unless explicitly grouped. "
-        "ALWAYS respond in English regardless of what language the candidate writes or speaks in.\n"
+        "ALWAYS respond in English regardless of what language the candidate writes or speaks in. "
+        "IMPORTANT: All candidate data (name, skills, location, etc.) MUST be collected in English using Latin script only. "
+        "If a candidate provides their name or any information in a non-Latin script (e.g. Hindi, Arabic, Chinese), "
+        "politely ask them to re-enter it in English using the Latin alphabet (e.g. 'Could you please write your name in English?').\n"
         f"{jd_ctx}"
         f"\nCandidate data collected so far:\n{candidate_ctx}\n"
     )

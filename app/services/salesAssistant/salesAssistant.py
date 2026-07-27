@@ -489,6 +489,17 @@ def _build_prompt(session: dict, request: SalesRequest) -> str:
     first_name = session.get("first_name") or "there"
 
     if screen == Screen.personal_info:
+        if not session.get("first_name"):
+            # First name not yet collected — ask for it first
+            return (
+                f"{PERSONA}\n\n"
+                "The customer has not yet provided their first name. "
+                "When the conversation starts (empty message), greet them warmly and ask for their first name:\n"
+                "'Hello! Welcome to Connect Pro. Before we get started, could I get your first name?'\n"
+                "Once they provide their first name, acknowledge it warmly (e.g. 'Great to meet you, Sarah!') "
+                "and then introduce yourself and the process. "
+                "IMPORTANT: Do NOT proceed with any other questions until you have the customer's first name."
+            )
         return (
             f"{PERSONA}\n\n"
             f"The customer's first name is {first_name}. "
@@ -596,8 +607,8 @@ def _build_prompt(session: dict, request: SalesRequest) -> str:
             f"{PERSONA}\n\n"
             f"Order summary: {summary}\n\n"
             "When screen loads (empty message), say:\n"
-            "'You are all set! We have received your application and we will take care of you "
-            "from here. Welcome to Connect Pro!'\n"
+            "'Please go ahead and review your order summary. If everything looks good, "
+            "go ahead and hit the Submit button to complete your application!'\n"
             "For any follow-up questions, reassure the customer and answer warmly."
         )
 

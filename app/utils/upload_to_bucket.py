@@ -371,18 +371,19 @@ def upload_file_to_s3(file_path: str, bucket_name: str = None, object_name: str 
         return {'success': False, 'url': None, 'message': msg}
 
 
-def upload_file_object_to_s3(file_object, bucket_name: str = None, object_name: str = None) -> dict:
-    """Upload a file-like object to S3 with public-read ACL."""
+def upload_file_object_to_s3(file_object, bucket_name: str = None, object_name: str = None, public: bool = False) -> dict:
+    """Upload a file-like object to S3. Set public=True for public-read ACL (permanent URL)."""
     if bucket_name is None:
         bucket_name = S3_BUCKET_NAME
     try:
+        extra_args = {'ContentType': get_content_type(object_name)}
+        if public:
+            extra_args['ACL'] = 'public-read'
         s3_client.upload_fileobj(
             file_object,
             bucket_name,
             object_name,
-            ExtraArgs={
-                'ContentType': get_content_type(object_name)
-            }
+            ExtraArgs=extra_args
         )
         file_url = _build_url(bucket_name, object_name)
         logger.info(f"File object uploaded successfully: {file_url}")
