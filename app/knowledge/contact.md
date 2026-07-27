@@ -11,3 +11,7 @@ Users can schedule a free consultation. All submitted requests are stored intern
 ## When To Use The Contact Page
 
 Visitors should use the Contact page when requesting a proposal, requesting a quote, scheduling a consultation, discussing project requirements, or exploring partnership opportunities.
+
+## Email
+
+For direct inquiries, contact the Open Queue team at contact@openqueue.us.
